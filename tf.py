@@ -20,6 +20,10 @@ from datetime import timedelta
 
 SCOPE = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 CREDS = ServiceAccountCredentials.from_json_keyfile_name('learn-app-engine-d352d8131754.json', SCOPE)
+GSHEET = 'NS Hackathon'
+WSHEET = 'Sheet1'
+DATECOL = 'premier_upgrade_date'
+VALUECOL = 'rec_count'
 
 # date-time parsing function for loading the dataset
 def parser(x):
@@ -94,15 +98,15 @@ def forecast_lstm(model, batch_size, X):
 
 def timeSeries():
     client = gspread.authorize(CREDS)
-    sheet = client.open("pytest").worksheet("sheet")
+    sheet = client.open(GSHEET).worksheet(WSHEET)
     ws = sheet.get_all_records()
     df = pd.DataFrame(ws)
-    df['premier_upgrade_date'] = pd.to_datetime(df['premier_upgrade_date'])
-    df = df.sort_values(by='premier_upgrade_date', ascending=True)
-    maxDateList = df['premier_upgrade_date'].tail(1).to_string().split(' ')
+    df[DATECOL] = pd.to_datetime(df[DATECOL])
+    df = df.sort_values(by=DATECOL, ascending=True)
+    maxDateList = df[DATECOL].tail(1).to_string().split(' ')
     maxDateStr = maxDateList[len(maxDateList)-1]
 
-    df['s_moving_avg'] = sMovingAvg(df['rec_count'])
+    df['s_moving_avg'] = sMovingAvg(df[VALUECOL])
     df =  df.dropna(subset=['s_moving_avg'])
     series = pd.Series(df['s_moving_avg'], index= df.index)
    
@@ -147,17 +151,4 @@ def timeSeries():
         sheet.append_row(prediction)
         print({'day':i+1, 'predicted':yhat, 'expected': expected})
 
-    #sheet.append_row(predicted_value)
-    # line plot of observed vs predicted
-    #df.plot(x='premier_upgrade_date', y='rec_count', color='blue')
-    #df.plot(x='premier_upgrade_date', y='s_moving_avg', color='red')
-    #pyplot.show()
     return 'time series prediction done'
-
-#if __name__ == '__main__':
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app. This
-    # can be configured by adding an `entrypoint` to app.yaml.
-    #pushResults()
-   # timeSeries()
-# [END gae_python37_app]
