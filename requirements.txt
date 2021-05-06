@@ -19,7 +19,7 @@ decorator==4.4.0
 deprecation==2.0.7
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-Migrate==2.4.0
 flask-restplus==0.12.1
 Flask-Script==2.0.6
