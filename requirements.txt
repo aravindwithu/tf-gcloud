@@ -38,7 +38,7 @@ gspread-dataframe==3.0.3
 h5py==2.9.0
 httplib2==0.13.1
 idna==2.8
-ipython==7.7.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 itsdangerous==1.1.0
 jedi==0.15.1
